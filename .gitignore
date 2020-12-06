@@ -1,0 +1,12 @@
+node_modules/
+*.env*
+*.log
+.vscode/*
+coverage/*
+log/
+dist/
+uploads/
+.svn
+deploy/
+*.tgz
+test/
