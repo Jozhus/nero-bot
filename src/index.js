@@ -22,7 +22,9 @@ client.on("message", msg => {
         return;
     }
 
-    let [command, args] = msg.content.slice(1).split(/ +/);
+    let command = msg.content.slice(1).split(/ +/);
+    let args = command.splice(1);
+    command = command[0];
 
     if (!client.commands.has(command)) {
         return;
