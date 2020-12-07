@@ -1,102 +1,13 @@
-const presets = {
-    "will": [
-        {
-            phaseDescription: "> Watching cutscene",
-            duration: 10,
-            loop: false,
-            tick(timeLeft) {
-                let [message, isFinished] = ["", false];
-
-                if (timeLeft === 0) {
-                    isFinished = true;
-                }
-
-                return [message, isFinished];
-            }
-        },
-        {
-            phaseDescription: "> Waiting for first phase 1 crack",
-            duration: 15, // TODO: Figure out cutscene + time till first crack.
-            loop: false,
-            tick(timeLeft) {
-                let [message, isFinished] = ["", false];
-
-                if (timeLeft === 0) {
-                    isFinished = true;
-                }
-
-                return [message, isFinished];
-            }
-        },
-        {
-            phaseDescription: "> Phase 1 exams",
-            duration: 120,
-            loop: true,
-            tick(timeLeft) {
-                let [message, isFinished] = ["", false];
-
-                switch (timeLeft) {
-                    case 15:
-                        message = "15 seconds left until next crack.";
-                        break;
-                    case 10:
-                        message = "10 seconds left until next crack.";
-                        break;
-                    case 0:
-                        message = "Crack!";
-                        isFinished = true;
-                        break;
-                }
-
-                return [message, isFinished];
-            }
-        },
-        {
-            phaseDescription: "> Waiting for first phase 2 exam",
-            duration: 0,
-            loop: true,
-            tick(timeLeft) {
-                let [message, isFinished] = ["", false];
-
-                if (timeLeft === 0) {
-                    isFinished = true;
-                }
-
-                return [message, isFinished];
-            }
-        },
-        {
-            phaseDescription: "> Phase 2 exams",
-            duration: 120,
-            loop: true,
-            tick(timeLeft) {
-                let [message, isFinished] = ["", false];
-
-                switch (timeLeft) {
-                    case 15:
-                        message = "15 seconds left until next test.";
-                        break;
-                    case 10:
-                        message = "10 seconds left until next test.";
-                        break;
-                    case 0:
-                        message = "Test!";
-                        isFinished = true;
-                        break;
-                }
-
-                return [message, isFinished];
-            }
-        }
-    ]
-}
+const presets = require("./constants/bossTimerPresets");
 
 module.exports = class BossTimer {
     static duration = 0;
-    static elapsedTime = 0;
+    static time = 0;
+    static totalTime = 0;
     static interval = null;
     static bossName = "";
     static phase = -1;
+    static tts = false;
 
     static preset(boss, msg) {
         if (!presets[boss]) {
@@ -116,8 +27,9 @@ module.exports = class BossTimer {
     }
 
     static tick(msg) {
-        this.elapsedTime++;
-        let [message, isFinished] = presets[this.bossName][this.phase].tick(this.timeLeft);
+        this.time++;
+        this.totalTime++;
+        let [message, isFinished] = presets[this.bossName][this.phase].tick(this.timeLeft, this.totalTime);
 
         if (message) {
             this.logAndMessage(message, msg);
@@ -125,7 +37,7 @@ module.exports = class BossTimer {
 
         if (isFinished) {
             if (presets[this.bossName][this.phase].loop) {
-                this.elapsedTime = 0;
+                this.time = 0;
             } else {
                 this.nextPhase(msg);
             }
@@ -140,7 +52,7 @@ module.exports = class BossTimer {
 
         this.logAndMessage("Boss timer has been synced.", msg);
 
-        this.elapsedTime = 0;
+        this.time = 0;
     }
 
     static nextPhase(msg) {
@@ -154,7 +66,7 @@ module.exports = class BossTimer {
         this.logAndMessage(presets[this.bossName][this.phase].phaseDescription, msg);
 
         this.duration = presets[this.bossName][this.phase].duration;
-        this.elapsedTime = 0;
+        this.time = 0;
     }
 
     static end(msg) {
@@ -165,22 +77,28 @@ module.exports = class BossTimer {
         this.logAndMessage("Boss timer ended.", msg);
 
         this.duration = 0;
-        this.elapsedTime = 0;
+        this.time = 0;
+        this.totalTime = 0;
         this.interval = null;
         this.bossName = "";
         this.phase = -1;
     }
 
+    static toggleTTS(msg) {
+        this.tts = !this.tts;
+
+        this.logAndMessage(`Text to speech turned ${this.tts ? "on" : "off"}.`, msg);
+    }
+
     static get timeLeft() {
-        return this.interval ? this.duration - this.elapsedTime : 0;
+        return this.interval ? this.duration - this.time : 0;
     }
 
     static logAndMessage(message, msg) {
         console.log(message);
 
         if (msg) {
-            msg.channel.send(message);
+            msg.channel.send(message, { tts: this.tts });
         }
     }
-
 }

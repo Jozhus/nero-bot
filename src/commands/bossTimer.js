@@ -20,6 +20,9 @@ module.exports = {
             case "phase":
                 BossTimer.nextPhase(msg);
                 break;
+            case "tts":
+                BossTimer.toggleTTS(msg);
+                break;
         }
     }
 };
