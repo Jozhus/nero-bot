@@ -3,10 +3,12 @@ const notCurses = require("../constants/whitelist");
 const stars = "*,./;:'\"\\-_=+`~!^ ";
 
 module.exports = function (original) {
+    let placement = "";
     let stripped = original;
 
     Array.from(stars).forEach(star => stripped = stripped.replace(new RegExp(`\\${star}`, 'g'), ''));
 
+    placement = Array.from(original).map(char => (stars.includes(char) ? char : ' ')).join('');
     let replaced = stripped;
 
     // This is dumb
@@ -18,7 +20,7 @@ module.exports = function (original) {
 
                     curses.forEach(curse => {
                         if (stripped.toLowerCase().includes(curse.toLowerCase())) {
-                            replacedSubstr = replacedSubstr.replace(new RegExp(curse, "ig"), "\\*".repeat(curse.length));
+                            replacedSubstr = replacedSubstr.replace(new RegExp(curse, "ig"), "*".repeat(curse.length));
                         }
                     })
 
@@ -29,15 +31,14 @@ module.exports = function (original) {
     } else {
         curses.forEach(curse => {
             if (stripped.toLowerCase().includes(curse.toLowerCase())) {
-                replaced = replaced.replace(new RegExp(curse, "ig"), "\\*".repeat(curse.length));
+                replaced = replaced.replace(new RegExp(curse, "ig"), "*".repeat(curse.length));
             }
         })
     }
 
-    Array.from(original).forEach((char, i) => {
-        while (char !== stripped[i]) {
+    Array.from(placement).forEach((char, i) => {
+        if (char !== ' ') {
             replaced = replaced.slice(0, i) + char + replaced.slice(i);
-            stripped = stripped.slice(0, i) + char + stripped.slice(i);
         }
     });
 

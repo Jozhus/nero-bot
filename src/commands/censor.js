@@ -7,6 +7,6 @@ module.exports = {
             return;
         }
 
-        msg.channel.send(censor(args.join(' ')));
+        msg.channel.send(censor(args.join(' ')).replace(new RegExp("\\*", 'g'), '\\*'));
     }
 };
