@@ -12,9 +12,10 @@ module.exports = {
                 VoiceChat.join(msg);
                 break;
             case "leave":
-                VoiceChat.leave();
+                VoiceChat.leave(msg);
                 break;
             case "say":
+                VoiceChat.speak(args.slice(1).join(' '), msg);
                 break;
         }
     }

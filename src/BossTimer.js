@@ -1,4 +1,6 @@
 const presets = require("./constants/bossTimerPresets");
+const logAndMessage = require("./helpers/logAndMessage");
+const VoiceChat = require("./VoiceChat");
 
 module.exports = class BossTimer {
     static duration = 0;
@@ -7,11 +9,11 @@ module.exports = class BossTimer {
     static interval = null;
     static bossName = "";
     static phase = -1;
-    static tts = false;
+    static tts = true;
 
     static preset(boss, msg) {
         if (!presets[boss]) {
-            this.logAndMessage("No boss preset found with that name!", msg);
+            logAndMessage("I couldn't find any boss preset with that name!", msg);
             return;
         }
 
@@ -19,7 +21,7 @@ module.exports = class BossTimer {
             this.end();
         }
 
-        this.logAndMessage("Boss timer started.", msg);
+        this.logMessageAndSpeak("Boss timer started.", msg, this.tts);
 
         this.bossName = boss;
         this.nextPhase(msg);
@@ -31,9 +33,7 @@ module.exports = class BossTimer {
         this.totalTime++;
         let [message, isFinished] = presets[this.bossName][this.phase].tick(this.timeLeft, this.totalTime);
 
-        if (message) {
-            this.logAndMessage(message, msg);
-        }
+        this.logMessageAndSpeak(message, msg);
 
         if (isFinished) {
             if (presets[this.bossName][this.phase].loop) {
@@ -46,11 +46,11 @@ module.exports = class BossTimer {
 
     static forceUpdate(msg) {
         if (!this.interval) {
-            this.logAndMessage("There is currently no boss timer active.", msg);
+            logAndMessage("There is currently no boss timer active.", msg);
             return;
         }
 
-        this.logAndMessage("Boss timer has been synced.", msg);
+        logAndMessage("Boss timer has been synced.", msg);
 
         this.time = 0;
     }
@@ -63,7 +63,7 @@ module.exports = class BossTimer {
             return;
         }
 
-        this.logAndMessage(presets[this.bossName][this.phase].phaseDescription, msg);
+        logAndMessage(presets[this.bossName][this.phase].phaseDescription, msg);
 
         this.duration = presets[this.bossName][this.phase].duration;
         this.time = 0;
@@ -74,7 +74,7 @@ module.exports = class BossTimer {
             clearInterval(this.interval);
         }
 
-        this.logAndMessage("Boss timer ended.", msg);
+        this.logMessageAndSpeak("Boss timer ended.", msg);
 
         this.duration = 0;
         this.time = 0;
@@ -87,18 +87,22 @@ module.exports = class BossTimer {
     static toggleTTS(msg) {
         this.tts = !this.tts;
 
-        this.logAndMessage(`Text to speech turned ${this.tts ? "on" : "off"}.`, msg);
+        this.logMessageAndSpeak(`Text to speech turned ${this.tts ? "on" : "off"}.`, msg, this.tts);
     }
 
     static get timeLeft() {
         return this.interval ? this.duration - this.time : 0;
     }
 
-    static logAndMessage(message, msg) {
-        console.log(message);
+    static logMessageAndSpeak(message, msg) {
+        if (!message) {
+            return;
+        }
 
-        if (msg) {
-            msg.channel.send(message, { tts: this.tts });
+        logAndMessage(message, msg);
+
+        if (this.tts) {
+            VoiceChat.speak(message.replace(':', ''), msg);
         }
     }
 }

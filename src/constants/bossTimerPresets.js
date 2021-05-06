@@ -1,3 +1,5 @@
+const formatTime = require("../helpers/formatTime");
+
 module.exports = {
     "will": [
         {
@@ -24,16 +26,15 @@ module.exports = {
 
                 switch (timeLeft) {
                     case 59:
-                        message = `First crack is at ~${formatTime(1800 - (totalTime + 60))}.`;
+                        message = `First crack is at ${formatTime(1800 - (totalTime + 60))}.`;
                         break;
                     case 20:
-                        message = `20 seconds left until next crack.`;
+                        message = `20 seconds.`;
                         break;
                     case 10:
-                        message = `10 seconds left until next crack.`;
+                        message = `10 seconds.`;
                         break;
                     case 0:
-                        message = `Crack!`;
                         isFinished = true;
                         break;
                 }
@@ -50,16 +51,15 @@ module.exports = {
 
                 switch (timeLeft) {
                     case 119:
-                        message = `Next crack is at  ~${formatTime(1800 - (totalTime + 120))}.`;
+                        message = `Next crack is at ${formatTime(1800 - (totalTime + 120))}.`;
                         break;
                     case 20:
-                        message = `20 seconds left until next crack.`;
+                        message = `20 seconds.`;
                         break;
                     case 10:
-                        message = `10 seconds left until next crack.`;
+                        message = `10 seconds.`;
                         break;
                     case 0:
-                        message = `Crack!`;
                         isFinished = true;
                         break;
                 }
@@ -90,16 +90,15 @@ module.exports = {
 
                 switch (timeLeft) {
                     case 119:
-                        message = `Next test is at  ~${formatTime(1800 - (totalTime + 120))}.`;
+                        message = `Next test is at ${formatTime(1800 - (totalTime + 120))}.`;
                         break;
                     case 20:
-                        message = `20 seconds left until next test.`;
+                        message = `20 seconds.`;
                         break;
                     case 10:
-                        message = `10 seconds left until next test.`;
+                        message = `10 seconds.`;
                         break;
                     case 0:
-                        message = `Test!`;
                         isFinished = true;
                         break;
                 }
@@ -108,10 +107,4 @@ module.exports = {
             }
         }
     ]
-}
-
-function formatTime(seconds) {
-    var date = new Date(0);
-    date.setSeconds(seconds);
-    return date.toISOString().substr(14, 5);
 }
