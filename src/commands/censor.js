@@ -1,4 +1,4 @@
-const censor = require("../helpers/censorSim");
+const Censor = require("../helpers/censorSim");
 
 module.exports = {
     name: "censor",
@@ -7,6 +7,6 @@ module.exports = {
             return;
         }
 
-        msg.channel.send(censor(args.join(' ')).replace(new RegExp("\\*", 'g'), '\\*'));
+        msg.channel.send(Censor.censor(args.join(' ')).replace(new RegExp("\\*", 'g'), '\\*'));
     }
 };

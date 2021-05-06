@@ -4,5 +4,6 @@ module.exports = {
     bossTimer: require("./commands/bossTimer"),
     vc: require("./commands/vc"),
     ask: require("./commands/ask"),
-    censor: require("./commands/censor")
+    censor: require("./commands/censor"),
+    toggle: require("./commands/toggle")
 };
