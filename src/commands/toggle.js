@@ -16,6 +16,10 @@ module.exports = {
                 Toggles.globalUwu = !Toggles.globalUwu;
                 msg.channel.send(`Global uwu has be turned ${Toggles.globalUwu ? "on" : "off"}`);
                 break;
+            case "uwuChance":
+                Toggles.uwuChance = args[1];
+                msg.channel.send(`UwU chance set to ${Toggles.uwuChance * 100}%`);
+                break;
             case "hell":
                 Toggles.globalCensor = !Toggles.globalCensor;
                 Toggles.globalUwu = !Toggles.globalUwu;
