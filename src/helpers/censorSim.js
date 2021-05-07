@@ -3,10 +3,14 @@ const notCurses = require("../constants/whitelist");
 const stars = "*,./;:'\"\\-_=+`~!^ ";
 
 module.exports = class CensorSim {
-    static globalCensor = false;
-
     static isObscene(original) {
-        return (this.censor(original) !== original);
+        if (notCurses.some(nurse => original.toLowerCase().includes(nurse.toLowerCase()))) {
+            notCurses.forEach(curse => {
+                original = original.replace(new RegExp(curse, "ig"), ')');
+            });
+        }
+
+        return (curses.some(curse => original.toLowerCase().includes(curse.toLowerCase())));
     }
 
     static censor(original) {

@@ -1,4 +1,4 @@
-const Censor = require("../helpers/censorSim");
+const Toggles = require("../Toggles");
 
 module.exports = {
     name: "censor",
@@ -9,8 +9,18 @@ module.exports = {
 
         switch (args[0]) {
             case "globalCensor":
-                Censor.globalCensor = !Censor.globalCensor;
-                msg.channel.send(`Global censor has be turned ${Censor.globalCensor ? "on" : "off"}`);
+                Toggles.globalCensor = !Toggles.globalCensor;
+                msg.channel.send(`Global censor has be turned ${Toggles.globalCensor ? "on" : "off"}`);
+                break;
+            case "globalUwu":
+                Toggles.globalUwu = !Toggles.globalUwu;
+                msg.channel.send(`Global uwu has be turned ${Toggles.globalUwu ? "on" : "off"}`);
+                break;
+            case "hell":
+                Toggles.globalCensor = !Toggles.globalCensor;
+                Toggles.globalUwu = !Toggles.globalUwu;
+                msg.channel.send(`Hell has be turned ${Toggles.globalUwu ? "on" : "off"}`);
+                break;
         }
     }
 };

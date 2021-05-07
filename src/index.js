@@ -1,6 +1,9 @@
 require("dotenv-flow").config({ path: "./env" });
 const Discord = require("discord.js");
 const Censor = require("./helpers/censorSim");
+const Toggles = require("./Toggles");
+const Uwuifier = require("uwuifier");
+const uwuifier = new Uwuifier();
 
 const TOKEN = process.env.TOKEN;
 
@@ -20,16 +23,28 @@ client.on("ready", () => {
 
 client.on("message", async (msg) => {
     let author = msg.guild.member(msg.author);
-    let self = msg.guild.member(client.user);
+    // let self = msg.guild.member(client.user);
 
-    if (!author.user.bot && Censor.isObscene(msg.content) && Censor.globalCensor) {
-        await msg.delete();
-        //await self.setNickname(author.displayName);
-        await msg.channel.send(`${author.displayName}: ${Censor.censor(msg.content).replace(new RegExp("\\*", 'g'), '\\*')}`);
-        //await self.setNickname("Tiny Nero");
-    }
 
     if (msg.content.charAt(0) !== '!') {
+        if (!author.user.bot && Toggles.any()) {
+            let msgContent = msg.content;
+
+            if (Toggles.globalCensor && Censor.isObscene(msgContent) || Toggles.globalUwu) {
+                await msg.delete();
+
+                if (Toggles.globalCensor && Censor.isObscene(msgContent)) {
+                    msgContent = Censor.censor(msgContent).replace(new RegExp("\\*", 'g'), '\\*');
+                }
+
+                if (Toggles.globalUwu) {
+                    msgContent = uwuifier.uwuifySentence(msgContent);
+                }
+
+                await msg.channel.send(`${author.displayName}: ${msgContent}`);
+            }
+
+        }
         return;
     }
 
