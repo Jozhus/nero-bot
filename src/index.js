@@ -30,14 +30,16 @@ client.on("message", async (msg) => {
         if (!author.user.bot && Toggles.any()) {
             let msgContent = msg.content;
 
-            if (Toggles.globalCensor && Censor.isObscene(msgContent) || Toggles.globalUwu || Math.floor(Math.random() * (1 / Toggles.uwuChance)) == 0) {
+            let doUwu = Math.floor(Math.random() * (1 / Toggles.uwuChance)) == 0;
+
+            if (Toggles.globalCensor && Censor.isObscene(msgContent) || Toggles.globalUwu || doUwu) {
                 await msg.delete();
 
                 if (Toggles.globalCensor && Censor.isObscene(msgContent)) {
                     msgContent = Censor.censor(msgContent).replace(new RegExp("\\*", 'g'), '\\*');
                 }
 
-                if (Toggles.globalUwu || Toggles.uwuChance > 0) {
+                if (Toggles.globalUwu || doUwu) {
                     msgContent = uwuifier.uwuifySentence(msgContent);
                 }
 
