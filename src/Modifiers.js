@@ -1,26 +1,7 @@
 const filterList = require("./FilterList");
 
 module.exports = class Modifiers {
-    static rules = [
-        {
-            ruleName: "test1",
-            filterNames: ["uwu", "censor"],
-            locations: ["here", "there"],
-            targets: ["Jozhus", "you"],
-            options: {
-                chance: 0.5
-            }
-        },
-        {
-            ruleName: "test2",
-            filterNames: ["censor"],
-            locations: ["here"],
-            targets: ["Jozhus"],
-            options: {
-                chance: 1
-            }
-        }
-    ];
+    static rules = [];
 
     static getRuleNames() {
         return this.rules.map(rule => rule.ruleName);
@@ -71,7 +52,8 @@ module.exports = class Modifiers {
         let applied = false;
 
         this.rules.forEach(rule => {
-            if (rule.targets.includes("all") || rule.targets.includes(author.displayName)) {
+            if ((rule.locations.includes("global") || rule.locations.includes(msg.channel.name))
+                && (rule.targets.includes("all") || rule.targets.includes(author.displayName))) {
                 rule.filterNames.forEach(filterName => {
                     if (rule.options && rule.options.chance && Math.floor(Math.random() * (1 / rule.options.chance)) === 0) {
                         message = this.applyFilter(filterName, message);
@@ -83,8 +65,8 @@ module.exports = class Modifiers {
 
         if (applied) {
             await msg.delete();
+            await msg.channel.send(`${author.displayName}: ${message}`);
         }
 
-        await msg.channel.send(`${author.displayName}: ${message}`);
     }
 }

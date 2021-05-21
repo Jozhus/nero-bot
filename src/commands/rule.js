@@ -11,16 +11,18 @@ module.exports = {
             case "set":
                 const ruleName = args[1];
                 const filterNames = args[2].split(',');
-                const locations = args[3].split(',');
+                const locations = args[3].split(',').map(location => location === "here" ? msg.channel.name : location);
                 const targets = args[4].split(',');
                 const options = {
                     chance: 1
                 }
 
-                args[5].split(',').forEach(optionString => {
-                    const [key, value] = optionString.split('=');
-                    options[key] = parseFloat(value);
-                });
+                if (args[5]) {
+                    args[5].split(',').forEach(optionString => {
+                        const [key, value] = optionString.split('=');
+                        options[key] = parseFloat(value);
+                    });
+                }
 
                 Modifiers.setRule(ruleName, filterNames, locations, targets, options);
 
