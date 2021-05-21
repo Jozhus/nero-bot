@@ -57,7 +57,7 @@ module.exports = class Modifiers {
                 rule.filterNames.forEach(filterName => {
                     if (rule.options && rule.options.chance && Math.floor(Math.random() * (1 / rule.options.chance)) === 0) {
                         message = this.applyFilter(filterName, message);
-                        applied = true;
+                        applied = message !== msg.content;
                     }
                 });
             }
