@@ -2,7 +2,7 @@ const curses = require("../constants/curses");
 const notCurses = require("../constants/whitelist");
 const stars = "*,./;:'\"\\-_=+`~!^ ";
 
-module.exports = class CensorSim {
+module.exports = class Censor {
     static isObscene(original) {
         if (notCurses.some(nurse => original.toLowerCase().includes(nurse.toLowerCase()))) {
             notCurses.forEach(curse => {

@@ -4,7 +4,7 @@ module.exports = {
     bossTimer: require("./commands/bossTimer"),
     vc: require("./commands/vc"),
     ask: require("./commands/ask"),
-    censor: require("./commands/censor"),
     toggle: require("./commands/toggle"),
-    ghetto: require("./commands/ghetto")
+    filter: require("./commands/filter"),
+    rule: require("./commands/rule")
 };
