@@ -1,5 +1,3 @@
-const commands = require("../CommandList");
-
 const helpCommand = {
     name: "help",
     description: "Provides help for using Nero.",
@@ -11,6 +9,9 @@ const helpCommand = {
     *!nero help*
     *!nero help rule*`,
     execute(msg, args) {
+        const commands = require("../CommandList");
+        commands.help = helpCommand;
+
         if (!args.length) {
             msg.channel.send(`\`\`\`${Object.values(commands).map(command => command.name).join('\n')}\`\`\``);
             return;
@@ -25,5 +26,4 @@ const helpCommand = {
     }
 };
 
-commands.help = helpCommand;
 module.exports = helpCommand;
