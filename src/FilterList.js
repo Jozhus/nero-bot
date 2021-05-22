@@ -1,7 +1,6 @@
-const Censor = require("./helpers/censor");
-const ghetto = require("./helpers/ghetto");
-const Uwuifier = require("uwuifier");
-const uwuifier = new Uwuifier();
+const Censor = require("./filters/censor");
+const ghetto = require("./filters/ghetto");
+const Uwuifier = require("./filters/uwu");
 
 module.exports = {
     censor: {
@@ -14,7 +13,7 @@ module.exports = {
     uwu: {
         name: "uwu",
         apply(message) {
-            return uwuifier.uwuifySentence(message);
+            return Uwuifier.uwuifySentence(message);
         }
     },
     ghetto: {

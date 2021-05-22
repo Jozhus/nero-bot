@@ -32,6 +32,10 @@ module.exports = class Modifiers {
         }
     }
 
+    static getFilters() {
+        return filterList.map(filter => filter.name);
+    }
+
     static applyFilter(filterName, message) {
         if (filterList[filterName]) {
             message = filterList[filterName].apply(message);
@@ -42,9 +46,6 @@ module.exports = class Modifiers {
         return message;
     }
 
-    static getFilters() {
-        return filterList.map(filter => filter.name);
-    }
 
     static async enforceRules(msg) {
         let message = msg.content;

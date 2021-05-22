@@ -13,11 +13,5 @@ module.exports = {
         }
 
         msg.channel.send(answers[Math.floor(Math.random() * answers.length)]);
-
-        /*switch (args.join(' ')) {
-            case "is today the day?":
-                msg.channel.send(answers[Math.floor(Math.random() * answers.length)]);
-                break;
-        }*/
     }
 };
