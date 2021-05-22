@@ -2,6 +2,31 @@ const Modifiers = require("../Modifiers");
 
 module.exports = {
     name: "rule",
+    description: "Manage filter rules.",
+    usage: `
+    !nero rule set **\`RULE NAME\`** **\`FILTER NAME(s)\`** **\`CHANNEL(S)\`** **\`TARGET(S)\`** **\`OPTIONS\`**
+    *Define what filters will be used in what channels.
+    If the rule name already exists, it will be overwritten with the newly made rule.
+    Filters will modify incoming text in a specified channel by a specified target (For list of filters, try !nero get list filters)
+    Multiple filters, channels, targets and options can be specified by separating them with a ','
+    Specifying "global" as a channel will apply it to all channels.
+    Specifying "here" as a channel will apply it to the current channel.
+    Specifying "all" as a target will apply it to everybody.
+    Additional options can optionally be set with the format "**\`OPTION NAME\`**=**\`OPTION VALUE\`**".
+    Currently, the only option is chance which is the decimal chance that a the specified rule will apply. (Default is 1)*
+
+    !nero rule get **\`RULE NAME\`**
+    *Gets the settings of the specified rule.
+    Specifying '\\*' as a rule name will return a list of all rules.*
+
+    !nero rule delete **\`RULE NAME\`**
+    *Deletes a specified rule.*`,
+    examples: `
+    *!nero rule set global-uwu uwu global all*
+    *!nero rule set chance-of-hell uwu,censor,ghetto general,here,memes Person1,Person2 chance=0.5*
+    *!nero rule get \\**
+    *!nero rule get global-uwu*
+    *!nero rule delete global-uwu*`,
     execute(msg, args) {
         if (!args.length) {
             return;
@@ -62,7 +87,7 @@ Rule name:
 Filters:
     ${rule.filterNames.join("\n\t")}
 
-Locations:
+Channels:
     ${rule.locations.join("\n\t")}
 
 Targets:

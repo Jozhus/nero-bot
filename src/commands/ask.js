@@ -7,6 +7,12 @@ const answers = [
 
 module.exports = {
     name: "ask",
+    description: "Ask Nero a yes or no question about the future.",
+    usage: `
+    !nero ask **\`QUESTION\`**
+    *Ask a question.*`,
+    examples: `
+    *!nero ask Is today the day?*`,
     execute(msg, args) {
         if (!args.length) {
             return;
