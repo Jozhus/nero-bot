@@ -84,6 +84,9 @@ module.exports = class VoiceChat {
                     });
             });
         })
+            .catch(err => {
+                console.log(err);
+            });
     }
 
     static clearTemp() {
