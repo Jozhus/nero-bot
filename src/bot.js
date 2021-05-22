@@ -7,7 +7,7 @@ const client = new Discord.Client();
 
 client.commands = new Discord.Collection();
 
-Object.entries(require("./commandList")).map(([name, command]) => {
+Object.entries(require("./CommandList")).map(([name, command]) => {
     client.commands.set(name, command);
 })
 
