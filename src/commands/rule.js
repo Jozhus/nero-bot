@@ -32,6 +32,8 @@ module.exports = {
             return;
         }
 
+        const guildId = msg.guild.id;
+
         switch (args[0]) {
             case "set":
                 const ruleName = args[1];
@@ -49,21 +51,23 @@ module.exports = {
                     });
                 }
 
-                Modifiers.setRule(ruleName, filterNames, locations, targets, options);
+                Modifiers.setRule(msg.guild.id, ruleName, filterNames, locations, targets, options);
 
                 msg.channel.send(`"${ruleName}" rule made:\n${formatRule({ ruleName, filterNames, locations, targets, options })}`)
                 break;
             case "get":
                 switch (args[1]) {
                     case "*":
-                        msg.channel.send(`\`\`\`${Modifiers.getRuleNames().join(", ")}\`\`\``);
+                        const rules = Modifiers.getRuleNames(guildId).join(", ");
+
+                        msg.channel.send(`\`\`\`${rules.length ? rules : " "}\`\`\``);
 
                         break;
                     default:
-                        const rule = Modifiers.rules[Modifiers.getRuleNames().indexOf(args[1])];
+                        const found = Modifiers.getRuleNames(guildId).indexOf(args[1]);
 
-                        if (rule) {
-                            msg.channel.send(formatRule(rule));
+                        if (~found) {
+                            msg.channel.send(formatRule(Modifiers.settings.rules[guildId][found]));
                         } else {
                             msg.channel.send(`"${args[1]}" rule not found.`);
                         }
@@ -72,8 +76,8 @@ module.exports = {
                 }
                 break;
             case "delete":
-                Modifiers.deleteRule(args[1]);
-                msg.channel.send(`"${args[1]}} rule deleted."`)
+                Modifiers.deleteRule(guildId, args[1]);
+                msg.channel.send(`"${args[1]}" rule deleted.`)
                 break;
         }
     }

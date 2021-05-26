@@ -1,14 +1,31 @@
+const db = require("./constants/globals");
 const filterList = require("./FilterList");
+const merge = require("deepmerge");
 
 module.exports = class Modifiers {
-    static rules = [];
+    /*
+        {
+            rules: {
+                [guildId]: {
 
-    static getRuleNames() {
-        return this.rules.map(rule => rule.ruleName);
+                }
+            }
+        }
+    */
+    static settings = {
+        rules: {}
     }
 
-    static setRule(ruleName, filterNames, locations, targets, options = { chance: 1 }) {
-        let toChange = this.getRuleNames().indexOf(ruleName);
+    static getRuleNames(guildId) {
+        if (!this.settings.rules[guildId] || !this.settings.rules[guildId].length) {
+            return [];
+        }
+
+        return this.settings.rules[guildId].map(rule => rule.ruleName);
+    }
+
+    static setRule(guildId, ruleName, filterNames, locations, targets, options = { chance: 1 }) {
+        let toChange = this.getRuleNames(guildId).indexOf(ruleName);
         const newRule = {
             ruleName,
             filterNames,
@@ -18,17 +35,24 @@ module.exports = class Modifiers {
         }
 
         if (~toChange) {
-            this.rules[toChange] = newRule
+            this.settings.rules[guildId][toChange] = newRule
         } else {
-            this.rules.push(newRule);
+            if (!this.settings.rules[guildId]) {
+                this.settings.rules[guildId] = [];
+            }
+
+            this.settings.rules[guildId].push(newRule);
         }
+
+        db.saveSettings(guildId, "Modifiers", this.settings.rules[guildId]);
     }
 
-    static deleteRule(ruleName) {
-        let found = this.getRuleNames().this.rules.indexOf(ruleName);
+    static deleteRule(guildId, ruleName) {
+        let found = this.getRuleNames(guildId).indexOf(ruleName);
 
         if (~found) {
-            this.rules.splice(found, 1);
+            this.settings.rules[guildId].splice(found, 1);
+            db.saveSettings(guildId, "Modifiers", this.settings.rules[guildId]);
         }
     }
 
@@ -48,11 +72,17 @@ module.exports = class Modifiers {
 
 
     static async enforceRules(msg) {
+        console.log(this.settings);
         let message = msg.content;
         let author = msg.guild.member(msg.author);
         let applied = false;
+        const guildId = msg.guild.id;
 
-        this.rules.forEach(rule => {
+        if (!this.settings.rules[guildId]) {
+            return;
+        }
+
+        this.settings.rules[guildId].forEach(rule => {
             if ((rule.locations.includes("global") || rule.locations.includes(msg.channel.name))
                 && (rule.targets.includes("all") || rule.targets.includes(author.displayName))) {
                 rule.filterNames.forEach(filterName => {
@@ -69,5 +99,15 @@ module.exports = class Modifiers {
             await msg.channel.send(`${author.displayName}: ${message}`);
         }
 
+    }
+
+    static loadSettings(guildId, settings) {
+        const newSettings = { rules: { [guildId]: [] } };
+
+        settings.rules.forEach(rule => {
+            newSettings.rules[guildId].push(rule);
+        });
+
+        this.settings = merge(this.settings, newSettings);
     }
 }

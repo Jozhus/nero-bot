@@ -1,4 +1,6 @@
+const db = require("./constants/globals");
 const Discord = require("discord.js");
+const merge = require("deepmerge");
 const Modifiers = require("./Modifiers");
 
 const TOKEN = process.env.TOKEN;
@@ -13,8 +15,20 @@ Object.entries(require("./CommandList")).map(([name, command]) => {
 
 client.login(TOKEN);
 
-client.on("ready", () => {
+client.on("ready", async () => {
     console.log(`Logged in as ${client.user.tag}!`);
+
+    var guildIds = client.guilds.cache.map(guild => guild.id)
+    guildIds = Array.isArray(guildIds) ? guildIds : [guildIds];
+
+    (await db.getSettings(guildIds)).forEach(guildSettings => {
+        switch (guildSettings.component) {
+            case "Modifiers":
+                Modifiers.loadSettings(guildSettings.guildId, guildSettings.settings);
+                break;
+            // Add more here when more component settings need to be loaded.
+        }
+    });
 });
 
 client.on("message", async (msg) => {
@@ -41,5 +55,9 @@ client.on("message", async (msg) => {
         console.error(err);
     }
 
+
+});
+
+client.on("guildCreate", guild => {
 
 });
