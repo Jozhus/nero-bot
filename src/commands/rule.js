@@ -60,7 +60,7 @@ module.exports = {
                     case "*":
                         const rules = Modifiers.getRuleNames(guildId).join(", ");
 
-                        msg.channel.send(`\`\`\`${rules.length ? rules : " "}\`\`\``);
+                        msg.channel.send(rules.length ? `\`\`\`${rules}\`\`\`` : "No rules found.");
 
                         break;
                     default:

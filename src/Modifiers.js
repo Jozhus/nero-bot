@@ -102,6 +102,10 @@ module.exports = class Modifiers {
     }
 
     static loadSettings(guildId, settings) {
+        if (!settings.rules) {
+            return;
+        }
+
         const newSettings = { rules: { [guildId]: [] } };
 
         settings.rules.forEach(rule => {
