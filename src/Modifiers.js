@@ -60,9 +60,9 @@ module.exports = class Modifiers {
         return filterList.map(filter => filter.name);
     }
 
-    static applyFilter(filterName, message) {
+    static applyFilter(filterName, message, options, msg = null) {
         if (filterList[filterName]) {
-            message = filterList[filterName].apply(message);
+            message = filterList[filterName].apply(message, options, msg);
         } else {
             throw new Error(`"${filterName}" filter not found.`);
         }
@@ -72,7 +72,6 @@ module.exports = class Modifiers {
 
 
     static async enforceRules(msg) {
-        console.log(this.settings);
         let message = msg.content;
         let author = msg.guild.member(msg.author);
         let applied = false;
@@ -87,7 +86,7 @@ module.exports = class Modifiers {
                 && (rule.targets.includes("all") || rule.targets.includes(author.displayName))) {
                 rule.filterNames.forEach(filterName => {
                     if (rule.options && rule.options.chance && Math.floor(Math.random() * (1 / rule.options.chance)) === 0) {
-                        message = this.applyFilter(filterName, message);
+                        message = this.applyFilter(filterName, message, rule.options, msg);
                         applied = message !== msg.content;
                     }
                 });

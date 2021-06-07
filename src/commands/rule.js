@@ -47,8 +47,17 @@ module.exports = {
                 if (args[5]) {
                     args[5].split(',').forEach(optionString => {
                         const [key, value] = optionString.split('=');
-                        options[key] = parseFloat(value);
+                        options[key] = parseFloat(value) || value;
                     });
+                }
+
+                if (filterNames.includes("reactify")) {
+                    try {
+                        console.log(Modifiers.applyFilter("reactify", options.text, options, msg));
+                    } catch (err) {
+                        msg.channel.send(err.message);
+                        return;
+                    }
                 }
 
                 Modifiers.setRule(msg.guild.id, ruleName, filterNames, locations, targets, options);
