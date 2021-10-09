@@ -51,8 +51,8 @@ const alts = {
         "registered"
     ],
     's': [
-        "heavy_dollar_sign",
-        "five"
+        "five",
+        "heavy_dollar_sign"
     ],
     't': [
         "seven"
