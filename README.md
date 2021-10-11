@@ -1,1 +1,1 @@
-# maplestory-boss-caller-discord-bot
+nero-bot
