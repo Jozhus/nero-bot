@@ -5,6 +5,7 @@ module.exports = {
     filter: require("./commands/filter"),
     help: require("./commands/help"),
     nick: require("./commands/nick"),
+    roll: require("./commands/roll"),
     rule: require("./commands/rule"),
     vc: require("./commands/vc")
 };
